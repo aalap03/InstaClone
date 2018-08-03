@@ -1,4 +1,8 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
+
 
 android {
     compileSdkVersion 27
@@ -18,11 +22,36 @@ android {
     }
 }
 
+kapt {
+    generateStubs = true
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support:design:27.1.1'
+
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
+    implementation 'com.aurelhubert:ahbottomnavigation:2.1.0'
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    //dagger
+    compile 'com.google.dagger:dagger:2.15'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.15'
+    kapt 'com.google.dagger:dagger-compiler:2.15'
+    compile 'com.google.dagger:dagger-android:2.15'
+    compile 'com.google.dagger:dagger-android-support:2.15' // if you use the support libraries
+    annotationProcessor 'com.google.dagger:dagger-android-processor:2.15'
+
+    //anko
+    compile 'org.jetbrains.anko:anko-commons:0.10.5'
+
+
+}
+repositories {
+    mavenCentral()
 }

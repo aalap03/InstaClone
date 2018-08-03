@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:id="@+id/toolbar"
+            android:layout_height="wrap_content">
+            <include layout="@layout/include_layout_toolbar"/>
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_below="@+id/toolbar"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:text="AAAA"
+                android:id="@+id/dummy_text"
+                android:layout_height="wrap_content" />
+
+        </RelativeLayout>
+
+        <include
+            layout="@layout/include_layout_bottombar"/>
+    </RelativeLayout>
+
+
+</android.support.design.widget.CoordinatorLayout>
