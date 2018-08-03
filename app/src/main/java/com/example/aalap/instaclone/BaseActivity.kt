@@ -37,8 +37,6 @@ abstract class BaseActivity : AppCompatActivity(), AnkoLogger {
     @Inject
     lateinit var context: Context
 
-    lateinit var bottomNav: AHBottomNavigation
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(getLayoutId())
@@ -57,7 +55,7 @@ abstract class BaseActivity : AppCompatActivity(), AnkoLogger {
         overridePendingTransition(0, 0)
     }
 
-    fun setupBottomNavigation(bottomNav: AHBottomNavigation, context: Context, screenNum: Int) {
+    private fun setupBottomNavigation(bottomNav: AHBottomNavigation, context: Context, screenNum: Int) {
 
         info { "setting bottom nav...(" }
 
