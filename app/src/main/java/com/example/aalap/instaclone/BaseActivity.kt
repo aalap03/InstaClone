@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.Toolbar
 import android.widget.Toast
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem
@@ -17,6 +18,8 @@ import com.example.aalap.instaclone.add.AddActivity
 import com.example.aalap.instaclone.home.HomeActivity
 import com.example.aalap.instaclone.likes.LikesActivity
 import com.example.aalap.instaclone.search.SearchActivity
+import kotlinx.android.synthetic.main.include_layout_bottombar.*
+import kotlinx.android.synthetic.main.include_layout_toolbar.*
 import kotlinx.android.synthetic.main.layout_home.*
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
@@ -25,9 +28,10 @@ import javax.inject.Inject
 
 val TAG = "BaseActivity:"
 
-abstract class  BaseActivity : AppCompatActivity(), AnkoLogger {
+abstract class BaseActivity : AppCompatActivity(), AnkoLogger {
 
     abstract fun getScreenNum(): Int
+
     abstract fun getLayoutId(): Int
 
     @Inject
@@ -39,17 +43,25 @@ abstract class  BaseActivity : AppCompatActivity(), AnkoLogger {
         super.onCreate(savedInstanceState)
         setContentView(getLayoutId())
 
-        info { "Here I am..." }
+        toolbar.title = this.localClassName
+        setSupportActionBar(toolbar)
 
+        info { "Here I am..." }
         (App.create()).component.inject(this)
-        bottomNav = findViewById(R.id.bottom_navigation)
-        setupBottomNavigation(bottomNav)
+        setupBottomNavigation(bottom_navigation, this, getScreenNum())
         dummy_text.text = getScreenNum().toString()
     }
 
-    fun setupBottomNavigation(bottomNav: AHBottomNavigation) {
+    public override fun onPause() {
+        super.onPause()
+        overridePendingTransition(0, 0)
+    }
+
+    fun setupBottomNavigation(bottomNav: AHBottomNavigation, context: Context, screenNum: Int) {
 
         info { "setting bottom nav...(" }
+
+        info { "Num:$screenNum" }
 
         val item1 = AHBottomNavigationItem("Home", R.drawable.bottom_home_outline)
         val item2 = AHBottomNavigationItem("Search", R.drawable.bottom_search)
@@ -63,61 +75,65 @@ abstract class  BaseActivity : AppCompatActivity(), AnkoLogger {
         bottomNav.addItem(item4)
         bottomNav.addItem(item5)
 
-        if(bottomNav.currentItem == HOME) {
-            bottomNav.getItem(HOME).setDrawable(R.drawable.bottom_home_filled)
-        }else
-            bottomNav.getItem(HOME).setDrawable(R.drawable.bottom_home_outline)
+        bottomNav.currentItem = screenNum
+
+        bottomNav.getItem(screenNum).setDrawable(getFilledIcon(screenNum))
+
+
+        info { "currentItem: ${bottomNav.currentItem}" }
 
         bottomNav.setOnTabSelectedListener { position, wasSelected ->
 
-            try{
-                var intent = Intent()
+            bottomNav.postDelayed({
+                try {
 
-                if (position == HOME) {
-                    if (!wasSelected) {
-                        intent = Intent(context, HomeActivity::class.java)
-                        bottomNav.getItem(HOME).setDrawable(R.drawable.bottom_home_filled)
-                        startActivity(intent)
+                    if (position == HOME) {
+                        if (!wasSelected) {
+                            startActivity(Intent(context, HomeActivity::class.java))
+                        }
+                    } else if (position == SEARCH) {
+                        if (!wasSelected) {
+                            startActivity(Intent(context, SearchActivity::class.java))
+                        }
+                    } else if (position == ADD) {
+                        if (!wasSelected) {
+                            startActivity(Intent(context, AddActivity::class.java))
+                        }
+                    } else if (position == ACCOUNT) {
+                        if (!wasSelected) {
+                            startActivity(Intent(context, AccountActivity::class.java))
+                        }
+                    } else if (position == LIKES) {
+                        if (!wasSelected) {
+                            startActivity(Intent(context, LikesActivity::class.java))
+                        }
+                    } else {
+                        startActivity(Intent(context, HomeActivity::class.java))
                     }
-                } else if (position == SEARCH) {
-                    if (!wasSelected) {
-                        intent = Intent(context, SearchActivity::class.java)
-                        bottomNav.getItem(SEARCH).setDrawable(R.drawable.bottom_search)
-                        startActivity(intent)
-                    }
-                } else if (position == ADD) {
-                    if (!wasSelected) {
-                        intent = Intent(context, AddActivity::class.java)
-                        bottomNav.getItem(ADD).setDrawable(R.drawable.bottom_add_filled)
-                        startActivity(intent)
-                    }
-                } else if (position == ACCOUNT) {
-                    if (!wasSelected) {
-                        intent = Intent(context, AccountActivity::class.java)
-                        bottomNav.getItem(ACCOUNT).setDrawable(R.drawable.bottom_account_filled)
-                        startActivity(intent)
-                    }
-                } else if (position == LIKES) {
-                    if (!wasSelected) {
-                        intent = Intent(context, LikesActivity::class.java)
-                        bottomNav.getItem(LIKES).setDrawable(R.drawable.bottom_like_filled)
-                        startActivity(intent)
-                    }
-                } else {
-                    intent = Intent(context, HomeActivity::class.java)
-                    Toast.makeText(context, "Invalid tab selection", Toast.LENGTH_SHORT)
-                            .show()
-                    startActivity(intent)
+
+                    if (!wasSelected)
+                        finish()
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
-
-
-            } catch(e: Exception) {
-                e.printStackTrace()
-            }
+            }, 100)
 
             true
         }
 
+    }
+
+    fun getFilledIcon(screenNum: Int): Int {
+
+        when (screenNum) {
+            HOME -> return R.drawable.bottom_home_filled
+            ADD -> return R.drawable.bottom_add_filled
+            SEARCH -> return R.drawable.bottom_search
+            ACCOUNT -> return R.drawable.bottom_account_filled
+            LIKES -> return R.drawable.bottom_like_filled
+        }
+        return R.drawable.bottom_home_filled
     }
 
 

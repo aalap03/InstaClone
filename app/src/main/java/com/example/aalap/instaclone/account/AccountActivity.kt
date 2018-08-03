@@ -1,8 +1,10 @@
 package com.example.aalap.instaclone.account
 
+import android.support.v7.widget.Toolbar
 import com.example.aalap.instaclone.BaseActivity
 import com.example.aalap.instaclone.Constants
 import com.example.aalap.instaclone.R
+import kotlinx.android.synthetic.main.layout_account.*
 import org.jetbrains.anko.info
 
 class AccountActivity : BaseActivity() {
@@ -12,7 +14,6 @@ class AccountActivity : BaseActivity() {
     }
 
     override fun getScreenNum(): Int {
-        info { "Account:" }
         return Constants.ACCOUNT
     }
 }
