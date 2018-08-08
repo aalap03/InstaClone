@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.aalap.instaclone">
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -22,6 +26,7 @@
         <activity android:name=".likes.LikesActivity" />
         <activity android:name=".add.AddActivity" />
         <activity android:name=".account.AccountActivity" />
+        <activity android:name=".account.AccountEditActivity" />
     </application>
 
 </manifest>

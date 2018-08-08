@@ -47,7 +47,6 @@ abstract class BaseActivity : AppCompatActivity(), AnkoLogger {
         info { "Here I am..." }
         (App.create()).component.inject(this)
         setupBottomNavigation(bottom_navigation, this, getScreenNum())
-        dummy_text.text = getScreenNum().toString()
     }
 
     public override fun onPause() {

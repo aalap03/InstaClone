@@ -39,6 +39,9 @@ dependencies {
     implementation 'com.aurelhubert:ahbottomnavigation:2.1.0'
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
+    implementation 'de.hdodenhof:circleimageview:2.2.0'
+
+
     //dagger
     compile 'com.google.dagger:dagger:2.15'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.15'

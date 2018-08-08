@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/include_layout_toolbar" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/account_edit_profile_pic"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:src="@mipmap/ic_launcher_round" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:gravity="center_horizontal"
+        android:text="Change Photo"
+        android:textColor="@android:color/holo_blue_light"
+        android:textSize="18sp" />
+
+    <include
+        android:id="@+id/account_edit_name"
+        layout="@layout/include_template_edittext_input_layout" />
+
+    <include
+        android:id="@+id/account_edit_username"
+        layout="@layout/include_template_edittext_input_layout" />
+
+    <include
+        android:id="@+id/account_edit_website"
+        layout="@layout/include_template_edittext_input_layout" />
+
+    <include
+        android:id="@+id/account_edit_bio"
+        layout="@layout/include_template_edittext_input_layout" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="Private Information" />
+
+    <include
+        android:id="@+id/account_edit_email"
+        layout="@layout/include_template_edittext_input_layout" />
+
+    <include
+        android:id="@+id/account_edit_phone"
+        layout="@layout/include_template_edittext_input_layout" />
+
+    <include
+        android:id="@+id/account_edit_gender"
+        layout="@layout/include_template_edittext_input_layout" />
+</LinearLayout>
