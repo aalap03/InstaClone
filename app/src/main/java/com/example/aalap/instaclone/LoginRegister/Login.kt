@@ -13,12 +13,10 @@ import android.widget.*
 import com.example.aalap.instaclone.R
 import com.example.aalap.instaclone.account.Preference
 import com.example.aalap.instaclone.home.HomeActivity
-import com.google.android.gms.tasks.OnFailureListener
-import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 
-class LoginRegister : AppCompatActivity() {
+class Login : AppCompatActivity() {
 
     lateinit var userName: EditText
     lateinit var password: EditText
@@ -38,7 +36,7 @@ class LoginRegister : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.login_register)
+        setContentView(R.layout.login_screen)
 
         loginButton = findViewById(R.id.login_button)
         saveCredentials = findViewById(R.id.save_creds)
@@ -50,7 +48,7 @@ class LoginRegister : AppCompatActivity() {
         password = findViewById(R.id.password)
         progressBar = findViewById(R.id.progress_bar)
         progressBar.indeterminateDrawable.setColorFilter(
-                ContextCompat.getColor(this@LoginRegister, R.color.colorPrimary), android.graphics.PorterDuff.Mode.SRC_IN)
+                ContextCompat.getColor(this@Login, R.color.colorPrimary), android.graphics.PorterDuff.Mode.SRC_IN)
         loginText = findViewById(R.id.text)
 
         if (preference.isSaveCreds()) {
@@ -67,9 +65,9 @@ class LoginRegister : AppCompatActivity() {
 
         loginButton.setOnClickListener {
             if (TextUtils.isEmpty(userName.text.toString()))
-                Toast.makeText(this@LoginRegister, "Enter Username", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@Login, "Enter Username", Toast.LENGTH_SHORT).show()
             else if (TextUtils.isEmpty(password.text.toString()))
-                Toast.makeText(this@LoginRegister, "Enter Password", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@Login, "Enter Password", Toast.LENGTH_SHORT).show()
             else {
                 animateButtonWidth(true)
 
@@ -92,7 +90,7 @@ class LoginRegister : AppCompatActivity() {
         authInstance.createUserWithEmailAndPassword(userName, password).addOnSuccessListener { authResult ->
             //circular effect with for new screen
             logIn(authResult)
-            Toast.makeText(this@LoginRegister, "Registered", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@Login, "Registered", Toast.LENGTH_SHORT).show()
         }.addOnFailureListener { e ->
             e.printStackTrace()
             //set button with text again

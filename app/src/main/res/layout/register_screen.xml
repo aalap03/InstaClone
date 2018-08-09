@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/include_layout_toolbar" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/register_profile_image"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:src="@mipmap/ic_launcher_round" />
+
+    <include
+        android:id="@+id/register_email"
+        layout="@layout/include_template_edittext_input_layout" />
+
+    <include
+        android:id="@+id/register_name"
+        layout="@layout/include_template_edittext_input_layout" />
+
+    <include
+        android:id="@+id/register_password"
+        layout="@layout/include_template_edittext_input_layout" />
+
+    <include
+        android:id="@+id/register_confirm_password"
+        layout="@layout/include_template_edittext_input_layout" />
+
+    <FrameLayout
+        android:id="@+id/register_button"
+        android:layout_gravity="center"
+        android:layout_width="@dimen/button_width"
+        android:layout_height="56dp"
+        android:layout_marginTop="20dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="64dp"
+        android:background="@drawable/button_circular_shape"
+        android:clickable="true"
+        android:elevation="4dp"
+        android:foreground="?selectableItemBackground"
+        android:onClick="load">
+
+        <TextView
+            android:id="@+id/text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="sans-serif-light"
+            android:text="Register"
+            android:textColor="#ffffff" />
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_gravity="center"
+            android:visibility="invisible" />
+    </FrameLayout>
+
+
+</LinearLayout>

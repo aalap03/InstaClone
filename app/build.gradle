@@ -61,7 +61,8 @@ dependencies {
     String firebase = "16.0.1"
     implementation "com.google.firebase:firebase-core:$firebase"
     implementation 'com.google.firebase:firebase-auth:16.0.2'
-
+    implementation "com.google.firebase:firebase-database:$firebase"
+    implementation "com.google.firebase:firebase-storage:$firebase"
 
 }
 repositories {

@@ -23,7 +23,7 @@
         </activity>
 
 
-        <activity android:name=".LoginRegister.LoginRegister">
+        <activity android:name=".LoginRegister.Login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -36,6 +36,7 @@
         <activity android:name=".add.AddActivity" />
         <activity android:name=".account.AccountActivity" />
         <activity android:name=".account.AccountEditActivity" />
+        <activity android:name=".LoginRegister.Register" />
     </application>
 
 </manifest>
