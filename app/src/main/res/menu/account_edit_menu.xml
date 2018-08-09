@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/account_edit_menu_save"
+        app:showAsAction="always"
+        android:icon="@drawable/menu_save"
+        android:title="Home" />
+    <item
+        android:id="@+id/account_edit_menu_signout"
+        android:icon="@drawable/account_logout"
+        app:showAsAction="always"
+        android:title="Search" />
+</menu>

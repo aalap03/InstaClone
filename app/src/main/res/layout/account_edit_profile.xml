@@ -20,6 +20,7 @@
         android:layout_marginTop="5dp"
         android:gravity="center_horizontal"
         android:text="Change Photo"
+        android:id="@+id/account_edit_change_photo"
         android:textColor="@android:color/holo_blue_light"
         android:textSize="18sp" />
 

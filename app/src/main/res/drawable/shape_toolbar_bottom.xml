@@ -2,6 +2,7 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/toolbar_drawable_item"
         android:top="-1dp"
         android:bottom="1dp"
         android:left="-1dp"

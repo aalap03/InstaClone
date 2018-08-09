@@ -54,7 +54,7 @@ abstract class BaseActivity : AppCompatActivity(), AnkoLogger {
         overridePendingTransition(0, 0)
     }
 
-    private fun setupBottomNavigation(bottomNav: AHBottomNavigation, context: Context, screenNum: Int) {
+    public fun setupBottomNavigation(bottomNav: AHBottomNavigation, context: Context, screenNum: Int) {
 
         info { "setting bottom nav...(" }
 
