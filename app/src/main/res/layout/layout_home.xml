@@ -22,13 +22,9 @@
             android:layout_below="@+id/toolbar_layout"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:text="AAAA"
-                android:id="@+id/dummy_text"
-                android:layout_height="wrap_content" />
             <include
                 layout="@layout/include_layout_home_viewpager"/>
+
         </RelativeLayout>
 
         <include

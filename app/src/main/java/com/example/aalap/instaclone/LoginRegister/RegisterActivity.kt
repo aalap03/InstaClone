@@ -14,20 +14,34 @@ import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
 import android.text.InputType
 import android.text.TextUtils
-import android.util.Log
 import android.view.View
 import android.widget.*
 import com.example.aalap.instaclone.R
+import com.example.aalap.instaclone.Models.User
+import com.example.aalap.instaclone.Models.UserAccountDetails
 import com.example.aalap.instaclone.account.CODE_MEDIA_PERMISSION
 import com.example.aalap.instaclone.account.CODE_PICK_IMAGE
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.android.synthetic.main.account_edit_profile.*
+import com.google.firebase.database.*
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.register_screen.*
 import org.jetbrains.anko.AnkoLogger
-import org.jetbrains.anko.intentFor
+import org.jetbrains.anko.info
+import android.webkit.MimeTypeMap
+import android.content.ContentResolver
+import com.example.aalap.instaclone.Models.UserImage
+import com.example.aalap.instaclone.Preference
+import com.example.aalap.instaclone.home.HomeActivity
+import com.google.android.gms.tasks.Continuation
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.OnFailureListener
+import com.google.android.gms.tasks.Task
+import com.google.firebase.storage.UploadTask
 
-class Register : AppCompatActivity(), AnkoLogger {
+
+class RegisterActivity : AppCompatActivity(), AnkoLogger {
 
     var imageUri: Uri? = null
     lateinit var email: TextInputEditText
@@ -35,6 +49,10 @@ class Register : AppCompatActivity(), AnkoLogger {
     lateinit var password: TextInputEditText
     lateinit var confirmPassword: TextInputEditText
     lateinit var authInstance: FirebaseAuth
+    lateinit var firebaseDB: FirebaseDatabase
+    lateinit var databaseReference: DatabaseReference
+    lateinit var storageReference: StorageReference
+    lateinit var pref: Preference
 
     private val fabWidth: Int
         get() = resources.getDimension(R.dimen.fab_width).toInt()
@@ -46,9 +64,26 @@ class Register : AppCompatActivity(), AnkoLogger {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.register_screen)
 
+        firebaseDB = FirebaseDatabase.getInstance()
+        databaseReference = firebaseDB.reference
+        storageReference = FirebaseStorage.getInstance().getReference("user_images")
+        pref = Preference(applicationContext)
+
         register_profile_image.setOnClickListener { pickImage() }
         register_button.setOnClickListener { validateAndRegister() }
         setupEditText()
+
+        login.setOnClickListener{loginScreen()}
+    }
+
+    private fun loginScreen() {
+        startActivity(Intent(this, LoginActivity::class.java))
+    }
+
+    private fun getFileExtension(uri: Uri): String? {
+        val cR = contentResolver
+        val mime = MimeTypeMap.getSingleton()
+        return mime.getExtensionFromMimeType(cR.getType(uri))
     }
 
     private fun validateAndRegister() {
@@ -65,28 +100,61 @@ class Register : AppCompatActivity(), AnkoLogger {
         } else if (!password.text.toString().equals(confirmPassword.text.toString())) {
             Toast.makeText(this, "Passwords don't match", Toast.LENGTH_SHORT).show()
         } else {
-
+            registerUser(email.text.toString(), name.text.toString(), password.text.toString())
         }
     }
 
-    private fun registerUser(userName: String, password: String) {
+    private fun registerUser(email: String, name: String, password: String) {
         authInstance = FirebaseAuth.getInstance()
+        var imageStorageRef: StorageReference = storageReference.child("${System.currentTimeMillis()}.${getFileExtension(imageUri!!)}")
 
-        authInstance.createUserWithEmailAndPassword(userName, password).addOnSuccessListener { authResult ->
-            //circular effect with for new screen
-            enterApp(authResult)
-            Toast.makeText(this@Register, "Registered", Toast.LENGTH_SHORT).show()
-        }.addOnFailureListener { e ->
-            e.printStackTrace()
-            //set button with text again
+        authInstance.createUserWithEmailAndPassword(email, password)
+                .addOnSuccessListener { authResult ->
 
-            Handler().postDelayed({ animateButtonWidth(false) }, 500)
+                    Toast.makeText(this@RegisterActivity, "Registered", Toast.LENGTH_SHORT).show()
+                    if (authInstance.currentUser != null) {
 
-        }
+                        val userId = authResult.user.uid
+                        val user = User(name, email, userId!!)
+                        databaseReference.child("users").child(userId).setValue(user)
+
+                        val userAccount = UserAccountDetails("", name, name, "", imageUri.toString(), "", 0, 0, 0)
+                        databaseReference.child("users_account_setting").child(userId).setValue(userAccount);
+
+                        imageStorageRef.putFile(imageUri!!).continueWithTask(object : Continuation<UploadTask.TaskSnapshot, Task<Uri>> {
+                            override fun then(task: Task<UploadTask.TaskSnapshot>): Task<Uri> {
+                                if (task.isSuccessful) {
+                                    return imageStorageRef.downloadUrl
+                                }
+                                return throw task.exception!!
+                            }
+                        }).addOnCompleteListener{ task ->
+
+                            var userImage = UserImage(userId, task.result.toString())
+                            databaseReference.child("user_imges").child(userId).setValue(userImage)
+
+                            pref.setUserName(name)
+                            pref.setProfilePic(task.result.toString())
+
+                            enterApp()
+
+                        }.addOnFailureListener({ exception -> Toast.makeText(this@RegisterActivity, "Image Loading failed", Toast.LENGTH_SHORT).show()})
+
+                    }
+
+                }.addOnFailureListener { e ->
+                    e.printStackTrace()
+                    //set button with text again
+                    info { "inAuthinstance failure" }
+
+                    Handler().postDelayed({ animateButtonWidth(false) }, 500)
+
+                }
     }
 
-    private fun enterApp(authResult: AuthResult?) {
-
+    private fun enterApp() {
+        var intent = Intent(this, HomeActivity::class.java)
+        startActivity(intent)
     }
 
     private fun animateButtonWidth(isShrink: Boolean) {
@@ -134,6 +202,10 @@ class Register : AppCompatActivity(), AnkoLogger {
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
                     , CODE_MEDIA_PERMISSION)
+        } else {
+            var intent = Intent(Intent.ACTION_PICK)
+            intent.setType("image/*")
+            startActivityForResult(intent, CODE_PICK_IMAGE)
         }
     }
 
