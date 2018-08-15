@@ -3,17 +3,15 @@ package com.example.aalap.instaclone.LoginRegister
 import android.animation.ValueAnimator
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.widget.*
-import com.example.aalap.instaclone.Models.UserImage
+import com.example.aalap.instaclone.Models.UserAccountDetails
 import com.example.aalap.instaclone.R
 import com.example.aalap.instaclone.Preference
-import com.example.aalap.instaclone.USER_ID
 import com.example.aalap.instaclone.home.HomeActivity
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
@@ -22,18 +20,16 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import org.jetbrains.anko.AnkoLogger
-import org.jetbrains.anko.info
-import org.jetbrains.anko.intentFor
 
-class LoginActivity : AppCompatActivity(), AnkoLogger{
+class LoginActivity : AppCompatActivity(), AnkoLogger {
 
-    lateinit var userName: EditText
+    lateinit var userEmail: EditText
     lateinit var password: EditText
     lateinit var loginButton: View
     lateinit var authInstance: FirebaseAuth
     lateinit var progressBar: ProgressBar
     lateinit var loginText: TextView
-     var loginButtonExpandedWidth: Int =0
+    var loginButtonExpandedWidth: Int = 0
     lateinit var saveCredentials: CheckBox
     lateinit var preference: Preference
 
@@ -51,9 +47,10 @@ class LoginActivity : AppCompatActivity(), AnkoLogger{
         saveCredentials = findViewById(R.id.save_creds)
         loginButtonExpandedWidth = loginButton.measuredWidth
         preference = Preference(applicationContext)
+        preference.setProfilePic("")
 
         Log.d(TAG, "onCreate: $buttonWidth")
-        userName = findViewById(R.id.user_name)
+        userEmail = findViewById(R.id.user_email)
         password = findViewById(R.id.password)
         progressBar = findViewById(R.id.progress_bar)
         progressBar.indeterminateDrawable.setColorFilter(
@@ -61,10 +58,10 @@ class LoginActivity : AppCompatActivity(), AnkoLogger{
         loginText = findViewById(R.id.text)
 
         if (preference.isSaveCreds()) {
-            userName.setText(preference.getUserName())
+            userEmail.setText(preference.getUserEmail())
             password.setText(preference.getPassword())
         } else {
-            userName.setText("")
+            userEmail.setText("")
             password.setText("")
         }
 
@@ -73,7 +70,7 @@ class LoginActivity : AppCompatActivity(), AnkoLogger{
         authInstance = FirebaseAuth.getInstance()
 
         loginButton.setOnClickListener {
-            if (TextUtils.isEmpty(userName.text.toString()))
+            if (TextUtils.isEmpty(userEmail.text.toString()))
                 Toast.makeText(this@LoginActivity, "Enter Username", Toast.LENGTH_SHORT).show()
             else if (TextUtils.isEmpty(password.text.toString()))
                 Toast.makeText(this@LoginActivity, "Enter Password", Toast.LENGTH_SHORT).show()
@@ -81,50 +78,54 @@ class LoginActivity : AppCompatActivity(), AnkoLogger{
                 animateButtonWidth(true)
 
                 preference.saveCredentials(saveCredentials.isChecked)
+                preference.setUserEmail(userEmail.text.toString().trim { it <= ' ' })
 
-                if (saveCredentials.isChecked) {
+                if (saveCredentials.isChecked)
                     preference.setPassword(password.text.toString().trim { it <= ' ' })
-                    preference.setUserName(userName.text.toString().trim { it <= ' ' })
-                } else {
+                else
                     preference.setPassword("")
-                    preference.setUserName("")
-                }
 
-                loginUser(userName.text.toString().trim { it <= ' ' }, password.text.toString().trim { it <= ' ' })
+                loginUser(userEmail.text.toString().trim { it <= ' ' }, password.text.toString().trim { it <= ' ' })
             }
         }
     }
 
-    private fun registerUser(userName: String, password: String) {
-
-        authInstance.signInWithEmailAndPassword(userName, password).addOnSuccessListener { authResult ->
-            //circular effect with for new screen
-            logIn(authResult)
-            Toast.makeText(this@LoginActivity, "Registered", Toast.LENGTH_SHORT).show()
-        }.addOnFailureListener { e ->
-            e.printStackTrace()
-            //set button with text again
-
-            Handler().postDelayed({ animateButtonWidth(false) }, 500)
-            Log.d(TAG, "onFailure: " + e.message)
-        }
+    private fun loginUser(userName: String, password: String) {
+        authInstance!!.signInWithEmailAndPassword(userName, password)
+                .addOnSuccessListener { authResult -> logIn(authResult) }
+                .addOnFailureListener { e ->
+                    e.printStackTrace()
+                    Log.d(TAG, "onFailure: " + e.message)
+                }
     }
 
     private fun logIn(authResult: AuthResult) {
         var userId = authResult.user.uid
 
-        preference.setUserId(userId)
+        FirebaseDatabase.getInstance().reference.child("users_account_setting").child(userId)
+                .addListenerForSingleValueEvent(object: ValueEventListener {
+                    override fun onCancelled(dbError: DatabaseError) {
+                        Toast.makeText(this@LoginActivity, "Error logging in: ${dbError.message}", Toast.LENGTH_SHORT)
+                                .show()
+                    }
 
-        val intent = Intent(this, HomeActivity::class.java)
-        startActivity(intent)
-        finish()
-    }
+                    override fun onDataChange(snapShot: DataSnapshot) {
+                        if( snapShot.childrenCount > 0) {
+                            val userAccountDetails = snapShot.getValue(UserAccountDetails::class.java)
 
-    private fun loginUser(userName: String, password: String) {
-        authInstance!!.signInWithEmailAndPassword(userName, password).addOnSuccessListener { authResult -> logIn(authResult) }.addOnFailureListener { e ->
-            e.printStackTrace()
-            Log.d(TAG, "onFailure: " + e.message)
-        }
+                            preference.setProfilePic(userAccountDetails?.profilePic!!)
+                            preference.setUserName(userAccountDetails.username)
+                            preference.setUserId(userId)
+
+                            val intent = Intent(this@LoginActivity, HomeActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        }
+                    }
+                })
+
+
+
     }
 
     private fun animateButtonWidth(isShrink: Boolean) {

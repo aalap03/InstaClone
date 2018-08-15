@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 
 val USERNAME = "username"
+val USEREMAIL = "user_email"
 val PASSWORD = "password"
 val SAVE_CREDS = "save_creds"
 val PROFILE_PIC = "profile_pic"
@@ -11,21 +12,29 @@ val USER_ID = "user_id"
 
 class Preference(appContext: Context) {
 
-    val preference : SharedPreferences = appContext.getSharedPreferences("FirebaseApp", Context.MODE_PRIVATE)
+    val preference: SharedPreferences = appContext.getSharedPreferences("FirebaseApp", Context.MODE_PRIVATE)
 
     fun setUserName(userName: String) {
         preference.edit().putString(USERNAME, userName).apply()
     }
 
-    fun getUserName() : String{
+    fun getUserName(): String {
         return preference.getString(USERNAME, "")
     }
 
-    fun setProfilePic(imageUrl: String){
+    fun setUserEmail(userName: String) {
+        preference.edit().putString(USEREMAIL, userName).apply()
+    }
+
+    fun getUserEmail(): String {
+        return preference.getString(USEREMAIL, "")
+    }
+
+    fun setProfilePic(imageUrl: String) {
         preference.edit().putString(PROFILE_PIC, imageUrl).apply()
     }
 
-    fun getProfilePic():String{
+    fun getProfilePic(): String {
         return preference.getString(PROFILE_PIC, "")
     }
 
@@ -37,7 +46,7 @@ class Preference(appContext: Context) {
         return preference.getString(PASSWORD, "")
     }
 
-    fun saveCredentials(isSave : Boolean) {
+    fun saveCredentials(isSave: Boolean) {
         preference.edit().putBoolean(SAVE_CREDS, true).apply()
     }
 
@@ -49,7 +58,7 @@ class Preference(appContext: Context) {
         preference.edit().putString(USER_ID, userId).apply()
     }
 
-    fun getUserId():String{
+    fun getUserId(): String {
         return preference.getString(USER_ID, "")
     }
 }

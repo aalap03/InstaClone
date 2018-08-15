@@ -23,6 +23,7 @@ import kotlinx.android.synthetic.main.include_layout_toolbar.*
 import kotlinx.android.synthetic.main.layout_home.*
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
+import java.lang.Exception
 import javax.inject.Inject
 
 
@@ -34,6 +35,8 @@ abstract class BaseActivity : AppCompatActivity(), AnkoLogger {
 
     abstract fun getLayoutId(): Int
 
+    abstract fun getToolbarTitle():String
+
     @Inject
     lateinit var context: Context
 
@@ -41,12 +44,15 @@ abstract class BaseActivity : AppCompatActivity(), AnkoLogger {
         super.onCreate(savedInstanceState)
         setContentView(getLayoutId())
 
-        toolbar.title = this.localClassName
-        setSupportActionBar(toolbar)
-
+        if (toolbar != null) {
+            toolbar.title = getToolbarTitle()
+            setSupportActionBar(toolbar)
+        }
         info { "Here I am..." }
         (App.create()).component.inject(this)
-        setupBottomNavigation(bottom_navigation, this, getScreenNum())
+
+        if (bottom_navigation != null)
+            setupBottomNavigation(bottom_navigation, this, getScreenNum())
     }
 
     public override fun onPause() {
@@ -91,6 +97,8 @@ abstract class BaseActivity : AppCompatActivity(), AnkoLogger {
                     } else if (position == SEARCH) {
                         if (!wasSelected) {
                             startActivity(Intent(context, SearchActivity::class.java))
+                            finish()
+
                         }
                     } else if (position == ADD) {
                         if (!wasSelected) {
@@ -99,17 +107,17 @@ abstract class BaseActivity : AppCompatActivity(), AnkoLogger {
                     } else if (position == ACCOUNT) {
                         if (!wasSelected) {
                             startActivity(Intent(context, AccountActivity::class.java))
+                            finish()
                         }
                     } else if (position == LIKES) {
                         if (!wasSelected) {
                             startActivity(Intent(context, LikesActivity::class.java))
+                            finish()
                         }
                     } else {
                         startActivity(Intent(context, HomeActivity::class.java))
                     }
 
-                    if (!wasSelected)
-                        finish()
 
                 } catch (e: Exception) {
                     e.printStackTrace()

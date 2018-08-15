@@ -5,6 +5,9 @@ import com.example.aalap.instaclone.Constants
 import com.example.aalap.instaclone.R
 
 class SearchActivity : BaseActivity() {
+    override fun getToolbarTitle(): String {
+        return "Search bro..!!"
+    }
 
     override fun getScreenNum(): Int {
         return Constants.SEARCH

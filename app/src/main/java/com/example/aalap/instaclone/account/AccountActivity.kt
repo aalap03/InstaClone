@@ -15,7 +15,14 @@ import kotlinx.android.synthetic.main.include_layout_bottombar.*
 import kotlinx.android.synthetic.main.layout_account.*
 import org.jetbrains.anko.info
 
-class AccountActivity : BaseActivity() {
+class AccountActivity : BaseActivity(), ImageAdapter.CallBack {
+    override fun deliverImage(imagePath: String) {
+        info { "Clicked imagePath: $imagePath" }
+    }
+
+    override fun getToolbarTitle(): String {
+        return "Account bro...!!!"
+    }
 
     override fun getLayoutId(): Int {
         return R.layout.layout_account
@@ -31,7 +38,7 @@ class AccountActivity : BaseActivity() {
         //account_recycler_view.layoutManager = GridLayoutManager(this, 4)
         var requestManager = Glide.with(this)
                 .applyDefaultRequestOptions(RequestOptions().placeholder(R.mipmap.ic_launcher_round))
-        var imagesAdapter = ImageAdapter(this, getImges(), requestManager)
+        var imagesAdapter = ImageAdapter(this, getImges(), requestManager, this@AccountActivity)
         //account_recycler_view.adapter = imagesAdapter
 
         gridView.numColumns = 4

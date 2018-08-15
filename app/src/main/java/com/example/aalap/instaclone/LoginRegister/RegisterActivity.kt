@@ -21,7 +21,6 @@ import com.example.aalap.instaclone.Models.User
 import com.example.aalap.instaclone.Models.UserAccountDetails
 import com.example.aalap.instaclone.account.CODE_MEDIA_PERMISSION
 import com.example.aalap.instaclone.account.CODE_PICK_IMAGE
-import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
@@ -30,13 +29,9 @@ import kotlinx.android.synthetic.main.register_screen.*
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
 import android.webkit.MimeTypeMap
-import android.content.ContentResolver
-import com.example.aalap.instaclone.Models.UserImage
 import com.example.aalap.instaclone.Preference
 import com.example.aalap.instaclone.home.HomeActivity
 import com.google.android.gms.tasks.Continuation
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.storage.UploadTask
 
@@ -78,6 +73,7 @@ class RegisterActivity : AppCompatActivity(), AnkoLogger {
 
     private fun loginScreen() {
         startActivity(Intent(this, LoginActivity::class.java))
+        finish()
     }
 
     private fun getFileExtension(uri: Uri): String? {
@@ -105,21 +101,20 @@ class RegisterActivity : AppCompatActivity(), AnkoLogger {
     }
 
     private fun registerUser(email: String, name: String, password: String) {
+
+        animateButtonWidth(true)
+
         authInstance = FirebaseAuth.getInstance()
         var imageStorageRef: StorageReference = storageReference.child("${System.currentTimeMillis()}.${getFileExtension(imageUri!!)}")
+
+        var user: User
+        var userAccount: UserAccountDetails
 
         authInstance.createUserWithEmailAndPassword(email, password)
                 .addOnSuccessListener { authResult ->
 
                     Toast.makeText(this@RegisterActivity, "Registered", Toast.LENGTH_SHORT).show()
                     if (authInstance.currentUser != null) {
-
-                        val userId = authResult.user.uid
-                        val user = User(name, email, userId!!)
-                        databaseReference.child("users").child(userId).setValue(user)
-
-                        val userAccount = UserAccountDetails("", name, name, "", imageUri.toString(), "", 0, 0, 0)
-                        databaseReference.child("users_account_setting").child(userId).setValue(userAccount);
 
                         imageStorageRef.putFile(imageUri!!).continueWithTask(object : Continuation<UploadTask.TaskSnapshot, Task<Uri>> {
                             override fun then(task: Task<UploadTask.TaskSnapshot>): Task<Uri> {
@@ -130,15 +125,23 @@ class RegisterActivity : AppCompatActivity(), AnkoLogger {
                             }
                         }).addOnCompleteListener{ task ->
 
-                            var userImage = UserImage(userId, task.result.toString())
-                            databaseReference.child("user_imges").child(userId).setValue(userImage)
+                            val userId = authResult.user.uid
+                            user = User(name, email, userId!!, task.result.toString())
+                            databaseReference.child("users").child(userId).setValue(user)
 
-                            pref.setUserName(name)
+                            userAccount = UserAccountDetails("", name, name, "", task.result.toString(), "", 0, 0, 0)
+                            databaseReference.child("users_account_setting").child(userId).setValue(userAccount)
+
+                            pref.setUserId(userId)
                             pref.setProfilePic(task.result.toString())
+                            pref.setUserName(name)
+                            pref.setUserEmail(email)
 
-                            enterApp()
+                            var intent = Intent(this, HomeActivity::class.java)
+                            startActivity(intent)
+                            finish()
 
-                        }.addOnFailureListener({ exception -> Toast.makeText(this@RegisterActivity, "Image Loading failed", Toast.LENGTH_SHORT).show()})
+                        }.addOnFailureListener { exception -> Toast.makeText(this@RegisterActivity, "Image Loading failed", Toast.LENGTH_SHORT).show()}
 
                     }
 
@@ -146,15 +149,8 @@ class RegisterActivity : AppCompatActivity(), AnkoLogger {
                     e.printStackTrace()
                     //set button with text again
                     info { "inAuthinstance failure" }
-
                     Handler().postDelayed({ animateButtonWidth(false) }, 500)
-
                 }
-    }
-
-    private fun enterApp() {
-        var intent = Intent(this, HomeActivity::class.java)
-        startActivity(intent)
     }
 
     private fun animateButtonWidth(isShrink: Boolean) {
@@ -204,7 +200,7 @@ class RegisterActivity : AppCompatActivity(), AnkoLogger {
                     , CODE_MEDIA_PERMISSION)
         } else {
             var intent = Intent(Intent.ACTION_PICK)
-            intent.setType("image/*")
+            intent.type = "image/*"
             startActivityForResult(intent, CODE_PICK_IMAGE)
         }
     }
@@ -223,9 +219,11 @@ class RegisterActivity : AppCompatActivity(), AnkoLogger {
 
             } else if (ActivityCompat.shouldShowRequestPermissionRationale(this, permissions[0])) {
                 Toast.makeText(this, "Please allow application to use image for profile", Toast.LENGTH_SHORT)
+                        .show()
                 pickImage()
             } else {
                 Toast.makeText(this, "FOOK OFF...", Toast.LENGTH_SHORT)
+                        .show()
                 finish()
             }
         }

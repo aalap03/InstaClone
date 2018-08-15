@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:id="@+id/toolbar_layout"
+
+        android:layout_height="wrap_content">
+        <include
+            layout="@layout/include_layout_toolbar"/>
+    </RelativeLayout>
+
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/post_image"
+        android:scaleType="centerCrop"
+        android:layout_below="@+id/post_caption_layout"
+        android:src="@mipmap/ic_launcher_round" />
+
+    <include
+        android:id="@+id/post_caption_layout"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_below="@id/toolbar_layout"
+        layout="@layout/include_template_edittext_input_layout"/>
+
+</RelativeLayout>

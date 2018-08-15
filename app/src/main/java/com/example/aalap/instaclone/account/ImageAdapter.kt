@@ -13,7 +13,7 @@ import com.bumptech.glide.RequestManager
 import com.example.aalap.instaclone.R
 import kotlinx.android.synthetic.main.image_items.view.*
 
-class ImageAdapter(private val mContext: Context, var mThumbIds: List<String>, var requestManager: RequestManager) : BaseAdapter() {
+class ImageAdapter(private val mContext: Context, var mThumbIds: List<String>, var requestManager: RequestManager, var callBack: CallBack) : BaseAdapter() {
 
     override fun getCount(): Int = mThumbIds.size
 
@@ -36,6 +36,12 @@ class ImageAdapter(private val mContext: Context, var mThumbIds: List<String>, v
         requestManager.load(mThumbIds.get(position))
                 .into(imageView)
 
+        convertView?.setOnClickListener{callBack.deliverImage(mThumbIds[position])}
+
         return imageView
+    }
+
+    interface CallBack{
+        fun deliverImage(imagePath: String)
     }
 }

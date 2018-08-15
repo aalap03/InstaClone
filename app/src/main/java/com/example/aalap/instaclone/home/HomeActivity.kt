@@ -8,6 +8,10 @@ import kotlinx.android.synthetic.main.include_layout_home_viewpager.*
 
 class HomeActivity: BaseActivity() {
 
+    override fun getToolbarTitle(): String {
+        return "Home bro.!!"
+    }
+
     override fun getScreenNum(): Int {
         return Constants.HOME
     }
