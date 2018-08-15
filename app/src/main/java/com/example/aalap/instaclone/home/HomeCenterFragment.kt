@@ -50,9 +50,6 @@ class HomeCenterFragment : Fragment() , AnkoLogger{
                     val userPost = snapshotObj.getValue(UserPost::class.java)
                     info { "adding..$userPost" }
                     posts.add(userPost!!)
-                    posts.add(userPost!!)
-                    posts.add(userPost!!)
-                    posts.add(userPost!!)
                 }
                 info { "adapter posts: ${posts.size}" }
                 postAdapter.notifyDataSetChanged()

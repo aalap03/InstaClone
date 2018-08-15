@@ -26,11 +26,11 @@
         </activity>
 
 
-        <activity android:name=".LoginRegister.LoginActivity">
+        <activity android:name=".loginRegister.LoginActivity">
 
         </activity>
 
-        <activity android:name=".LoginRegister.RegisterActivity">
+        <activity android:name=".loginRegister.RegisterActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -56,22 +56,31 @@ class GalleryFragment : Fragment(), AnkoLogger, ImageAdapter.CallBack {
 
     private fun getAllShownImagesPath(activity: Activity): MutableList<String> {
         val uri: Uri
-        val cursor: Cursor?
+        var cursor: Cursor? = null
         val column_index_data: Int
         val listOfAllImages = ArrayList<String>()
         var absolutePathOfImage: String? = null
-        uri = android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        try{
 
-        val projection = arrayOf(MediaColumns.DATA, MediaStore.Images.Media.BUCKET_DISPLAY_NAME)
+            uri = android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
 
-        cursor = activity.contentResolver.query(uri, projection, null, null, null)
+            val projection = arrayOf(MediaColumns.DATA, MediaStore.Images.Media.BUCKET_DISPLAY_NAME)
 
-        column_index_data = cursor!!.getColumnIndexOrThrow(MediaColumns.DATA)
-        while (cursor!!.moveToNext()) {
-            absolutePathOfImage = cursor!!.getString(column_index_data)
+            cursor = activity.contentResolver.query(uri, projection, null, null, null)
 
-            listOfAllImages.add(absolutePathOfImage)
+            column_index_data = cursor!!.getColumnIndexOrThrow(MediaColumns.DATA)
+            while (cursor.moveToNext()) {
+                absolutePathOfImage = cursor.getString(column_index_data)
+
+                listOfAllImages.add(absolutePathOfImage)
+            }
+
+        } catch(e:Exception) {
+            e.printStackTrace()
+        }finally {
+            cursor?.close()
         }
+
         return listOfAllImages.asReversed()
     }
 

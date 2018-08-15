@@ -1,4 +1,4 @@
-package com.example.aalap.instaclone.LoginRegister
+package com.example.aalap.instaclone.loginRegister
 
 import android.Manifest
 import android.animation.ValueAnimator
