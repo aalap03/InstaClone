@@ -6,7 +6,6 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import com.bumptech.glide.Glide
 import com.example.aalap.instaclone.Models.UserPost
 import com.example.aalap.instaclone.Preference
@@ -19,10 +18,10 @@ import kotlinx.android.synthetic.main.layout_center_home_fragment.*
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
 
-class HomeCenterFragment : Fragment() , AnkoLogger{
+class HomeCenterFragment : Fragment(), AnkoLogger {
 
-    lateinit var pref : Preference
-    lateinit var postAdapter : PostAdapter
+    lateinit var pref: Preference
+    lateinit var postAdapter: PostAdapter
     var posts = mutableListOf<UserPost>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -40,18 +39,16 @@ class HomeCenterFragment : Fragment() , AnkoLogger{
         home_feeds_recycler.layoutManager = LinearLayoutManager(requireContext())
         home_feeds_recycler.adapter = postAdapter
 
-        FirebaseDatabase.getInstance().reference.child("user_posts").addListenerForSingleValueEvent(object: ValueEventListener {
+        FirebaseDatabase.getInstance().reference.child("user_posts").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onCancelled(error: DatabaseError) {
-            info { "fuss.. ${error.message}" }
+                info { "fuss.. ${error.message}" }
             }
 
             override fun onDataChange(snapShot: DataSnapshot) {
-                for(snapshotObj in snapShot.children) {
+                for (snapshotObj in snapShot.children) {
                     val userPost = snapshotObj.getValue(UserPost::class.java)
-                    info { "adding..$userPost" }
                     posts.add(userPost!!)
                 }
-                info { "adapter posts: ${posts.size}" }
                 postAdapter.notifyDataSetChanged()
             }
         })
@@ -60,5 +57,4 @@ class HomeCenterFragment : Fragment() , AnkoLogger{
                 .load(pref.getProfilePic())
                 .into(home_profile_pic)
     }
-
 }

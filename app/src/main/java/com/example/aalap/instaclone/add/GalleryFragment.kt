@@ -1,5 +1,6 @@
 package com.example.aalap.instaclone.add
 
+import android.Manifest
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -14,8 +15,10 @@ import org.jetbrains.anko.info
 import android.provider.MediaStore
 import android.provider.MediaStore.MediaColumns
 import android.app.Activity
+import android.content.pm.PackageManager
 import android.database.Cursor
 import android.net.Uri
+import android.support.v4.app.ActivityCompat
 import android.support.v7.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
@@ -23,7 +26,7 @@ import com.example.aalap.instaclone.account.ImageAdapter
 import kotlinx.android.synthetic.main.layout_account.*
 import kotlinx.android.synthetic.main.layout_gallery_fragment.*
 
-
+val PERM_CODE = 1
 class GalleryFragment : Fragment(), AnkoLogger, ImageAdapter.CallBack {
 
     var selectedImagePath = ""
@@ -42,17 +45,41 @@ class GalleryFragment : Fragment(), AnkoLogger, ImageAdapter.CallBack {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        var requestManager = Glide
+
+        if (ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+            requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+                    , PERM_CODE)
+        else
+            requestImages()
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if(requestCode == PERM_CODE) {
+
+            if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                requestImages()
+            }else
+                ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), permissions[0])
+        }
+    }
+
+    fun requestImages() {
+        val requestManager = Glide
                 .with(this)
                 .applyDefaultRequestOptions(RequestOptions()
                         .placeholder(R.mipmap.ic_launcher_round)
                 )
 
-        var allImages = getAllShownImagesPath(requireActivity())
-        var imageAdapter = ImageAdapter(requireContext(), allImages, requestManager, this@GalleryFragment)
+        val allImages = getAllShownImagesPath(requireActivity())
+        val imageAdapter = ImageAdapter(requireContext(), allImages, requestManager, this@GalleryFragment)
         gallery_recycler.adapter = imageAdapter
         deliverImage(allImages[0])
     }
+
+
 
     private fun getAllShownImagesPath(activity: Activity): MutableList<String> {
         val uri: Uri

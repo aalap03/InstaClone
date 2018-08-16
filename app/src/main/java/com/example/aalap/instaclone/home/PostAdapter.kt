@@ -12,6 +12,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.aalap.instaclone.Models.UserPost
 import com.example.aalap.instaclone.R
 import org.jetbrains.anko.AnkoLogger
+import org.jetbrains.anko.displayMetrics
 import org.jetbrains.anko.info
 
 class PostAdapter(var context: Context, var posts: MutableList<UserPost>) : RecyclerView.Adapter<PostAdapter.PostHolder>(), AnkoLogger {
@@ -39,6 +40,10 @@ class PostAdapter(var context: Context, var posts: MutableList<UserPost>) : Recy
             val userName = itemView.findViewById<TextView>(R.id.post_user_name)
             val postCaption = itemView.findViewById<TextView>(R.id.post_caption)
 
+
+            postImage.layoutParams.width = context.displayMetrics.widthPixels
+            postImage.layoutParams.height = context.displayMetrics.heightPixels/2
+
             info { userPost }
             requestManager
                     .load(userPost.postImage)
@@ -48,8 +53,8 @@ class PostAdapter(var context: Context, var posts: MutableList<UserPost>) : Recy
                     .load(userPost.user.profilePic)
                     .into(userImage)
 
-            userName.setText(userPost.user.name)
-            postCaption.setText(userPost.caption)
+            userName.text = userPost.user.name
+            postCaption.text = userPost.caption
         }
 
     }
