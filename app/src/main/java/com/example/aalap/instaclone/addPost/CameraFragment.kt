@@ -1,9 +1,8 @@
-package com.example.aalap.instaclone.add
+package com.example.aalap.instaclone.addPost
 
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore

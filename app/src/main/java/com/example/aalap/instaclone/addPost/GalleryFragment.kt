@@ -1,4 +1,4 @@
-package com.example.aalap.instaclone.add
+package com.example.aalap.instaclone.addPost
 
 import android.Manifest
 import android.os.Bundle
@@ -7,11 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
-import com.example.aalap.instaclone.Preference
 import com.example.aalap.instaclone.R
-import kotlinx.android.synthetic.main.layout_center_home_fragment.*
 import org.jetbrains.anko.AnkoLogger
-import org.jetbrains.anko.info
 import android.provider.MediaStore
 import android.provider.MediaStore.MediaColumns
 import android.app.Activity
@@ -19,11 +16,9 @@ import android.content.pm.PackageManager
 import android.database.Cursor
 import android.net.Uri
 import android.support.v4.app.ActivityCompat
-import android.support.v7.widget.RecyclerView
-import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
 import com.example.aalap.instaclone.account.ImageAdapter
-import kotlinx.android.synthetic.main.layout_account.*
+import kotlinx.android.synthetic.main.layout_camera_fragment.*
 import kotlinx.android.synthetic.main.layout_gallery_fragment.*
 
 val PERM_CODE = 1
@@ -52,6 +47,8 @@ class GalleryFragment : Fragment(), AnkoLogger, ImageAdapter.CallBack {
                     , PERM_CODE)
         else
             requestImages()
+
+        cam_image.pivotX
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

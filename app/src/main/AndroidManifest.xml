@@ -40,10 +40,10 @@
 
         <activity android:name=".search.SearchActivity" />
         <activity android:name=".likes.LikesActivity" />
-        <activity android:name=".add.AddActivity" />
+        <activity android:name=".addPost.AddActivity" />
         <activity android:name=".account.AccountActivity" />
         <activity android:name=".account.AccountEditActivity" />
-        <activity android:name=".add.PostActivity" />
+        <activity android:name=".addPost.PostActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"

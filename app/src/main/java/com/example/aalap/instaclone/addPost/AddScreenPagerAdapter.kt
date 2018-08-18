@@ -1,4 +1,4 @@
-package com.example.aalap.instaclone.add
+package com.example.aalap.instaclone.addPost
 
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager

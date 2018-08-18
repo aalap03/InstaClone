@@ -20,6 +20,8 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import org.jetbrains.anko.AnkoLogger
+import org.jetbrains.anko.info
+import java.util.*
 
 class LoginActivity : AppCompatActivity(), AnkoLogger {
 
@@ -48,6 +50,9 @@ class LoginActivity : AppCompatActivity(), AnkoLogger {
         loginButtonExpandedWidth = loginButton.measuredWidth
         preference = Preference(applicationContext)
         preference.setProfilePic("")
+
+        info { "Date: ${Date()}" }
+
 
         Log.d(TAG, "onCreate: $buttonWidth")
         userEmail = findViewById(R.id.user_email)

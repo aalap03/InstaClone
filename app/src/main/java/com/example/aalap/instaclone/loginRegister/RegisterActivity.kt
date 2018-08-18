@@ -14,6 +14,7 @@ import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
 import android.text.InputType
 import android.text.TextUtils
+import android.text.format.DateUtils
 import android.view.View
 import android.widget.*
 import com.example.aalap.instaclone.R
@@ -34,6 +35,8 @@ import com.example.aalap.instaclone.home.HomeActivity
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
 import com.google.firebase.storage.UploadTask
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class RegisterActivity : AppCompatActivity(), AnkoLogger {
@@ -58,6 +61,8 @@ class RegisterActivity : AppCompatActivity(), AnkoLogger {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.register_screen)
+
+        info{formatDate(Date().toString())}
 
         firebaseDB = FirebaseDatabase.getInstance()
         databaseReference = firebaseDB.reference
@@ -236,5 +241,15 @@ class RegisterActivity : AppCompatActivity(), AnkoLogger {
             imageUri = data?.data
             register_profile_image.setImageURI(imageUri)
         }
+    }
+
+    private fun formatDate(postTime: String): String {
+        var formattedTime = ""
+        //Fri Aug 17 19:59:01 EDT 2018
+        var simpleDateFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy")
+        val parse = simpleDateFormat.parse(postTime)
+
+        DateUtils.getRelativeTimeSpanString(parse.getTime(), Date().time, DateUtils.DAY_IN_MILLIS);
+        return formattedTime
     }
 }

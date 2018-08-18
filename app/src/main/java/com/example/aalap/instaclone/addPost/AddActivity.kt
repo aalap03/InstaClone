@@ -1,25 +1,13 @@
-package com.example.aalap.instaclone.add
+package com.example.aalap.instaclone.addPost
 
-import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.graphics.BitmapFactory
-import android.graphics.Camera
 import android.os.Bundle
-import android.os.Environment
-import android.provider.MediaStore
-import android.support.v4.content.FileProvider
 import android.view.Menu
 import android.view.MenuItem
 import com.example.aalap.instaclone.BaseActivity
 import com.example.aalap.instaclone.Constants
 import com.example.aalap.instaclone.R
-import kotlinx.android.synthetic.main.include_layout_bottombar.*
 import kotlinx.android.synthetic.main.layout_add.*
-import org.jetbrains.anko.info
-import java.io.File
-import java.text.SimpleDateFormat
-import java.util.*
 
 val SELECTED_IMAGE = "selected_image"
 

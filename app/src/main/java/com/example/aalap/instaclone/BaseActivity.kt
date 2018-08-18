@@ -4,8 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
-import android.widget.Toast
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem
 import com.example.aalap.instaclone.Constants.Companion.ACCOUNT
@@ -14,13 +12,12 @@ import com.example.aalap.instaclone.Constants.Companion.HOME
 import com.example.aalap.instaclone.Constants.Companion.LIKES
 import com.example.aalap.instaclone.Constants.Companion.SEARCH
 import com.example.aalap.instaclone.account.AccountActivity
-import com.example.aalap.instaclone.add.AddActivity
+import com.example.aalap.instaclone.addPost.AddActivity
 import com.example.aalap.instaclone.home.HomeActivity
 import com.example.aalap.instaclone.likes.LikesActivity
 import com.example.aalap.instaclone.search.SearchActivity
 import kotlinx.android.synthetic.main.include_layout_bottombar.*
 import kotlinx.android.synthetic.main.include_layout_toolbar.*
-import kotlinx.android.synthetic.main.layout_home.*
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
 import java.lang.Exception

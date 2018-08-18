@@ -2,6 +2,7 @@ package com.example.aalap.instaclone.home
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
+import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,8 @@ import com.example.aalap.instaclone.R
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.displayMetrics
 import org.jetbrains.anko.info
+import java.text.SimpleDateFormat
+import java.util.*
 
 class PostAdapter(var context: Context, var posts: MutableList<UserPost>) : RecyclerView.Adapter<PostAdapter.PostHolder>(), AnkoLogger {
 
@@ -39,6 +42,7 @@ class PostAdapter(var context: Context, var posts: MutableList<UserPost>) : Recy
             val userImage = itemView.findViewById<ImageView>(R.id.post_user_image)
             val userName = itemView.findViewById<TextView>(R.id.post_user_name)
             val postCaption = itemView.findViewById<TextView>(R.id.post_caption)
+            val postTime= itemView.findViewById<TextView>(R.id.post_time)
 
 
             postImage.layoutParams.width = context.displayMetrics.widthPixels
@@ -55,6 +59,15 @@ class PostAdapter(var context: Context, var posts: MutableList<UserPost>) : Recy
 
             userName.text = userPost.user.name
             postCaption.text = userPost.caption
+            postTime.text = formatDate(userPost.postTime)
+
+        }
+
+        private fun formatDate(postTime: String): String {
+            var simpleDateFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy")
+            val parse = simpleDateFormat.parse(postTime)
+
+            return DateUtils.getRelativeTimeSpanString(parse.getTime(), Date().time, DateUtils.SECOND_IN_MILLIS).toString();
         }
 
     }

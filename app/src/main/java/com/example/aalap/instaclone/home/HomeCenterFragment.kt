@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.example.aalap.instaclone.Models.UserPost
 import com.example.aalap.instaclone.Preference
@@ -39,9 +40,25 @@ class HomeCenterFragment : Fragment(), AnkoLogger {
         home_feeds_recycler.layoutManager = LinearLayoutManager(requireContext())
         home_feeds_recycler.adapter = postAdapter
 
-        FirebaseDatabase.getInstance().reference.child("user_posts").addListenerForSingleValueEvent(object : ValueEventListener {
+        Glide.with(this)
+                .load(pref.getProfilePic())
+                .into(home_profile_pic)
+
+        requestPostList()
+
+        refresh_layout.setOnRefreshListener { requestPostList() }
+    }
+
+    fun requestPostList() {
+
+        FirebaseDatabase.getInstance()
+                .reference
+                .child("user_posts")
+                .addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onCancelled(error: DatabaseError) {
                 info { "fuss.. ${error.message}" }
+                Toast.makeText(requireContext(), "Could not refresh feed", Toast.LENGTH_SHORT).show()
+                refresh_layout.isRefreshing = false
             }
 
             override fun onDataChange(snapShot: DataSnapshot) {
@@ -49,12 +66,10 @@ class HomeCenterFragment : Fragment(), AnkoLogger {
                     val userPost = snapshotObj.getValue(UserPost::class.java)
                     posts.add(userPost!!)
                 }
+                refresh_layout.isRefreshing = false
+                posts.reverse()
                 postAdapter.notifyDataSetChanged()
             }
         })
-
-        Glide.with(this)
-                .load(pref.getProfilePic())
-                .into(home_profile_pic)
     }
 }

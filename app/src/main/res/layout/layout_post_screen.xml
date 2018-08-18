@@ -7,20 +7,10 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:id="@+id/toolbar_layout"
-
         android:layout_height="wrap_content">
         <include
             layout="@layout/include_layout_toolbar"/>
     </RelativeLayout>
-
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/post_image"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/post_caption_layout"
-        android:src="@drawable/test_image" />
 
     <include
         android:id="@+id/post_caption_layout"
@@ -28,5 +18,16 @@
         android:layout_width="match_parent"
         android:layout_below="@id/toolbar_layout"
         layout="@layout/include_template_edittext_input_layout"/>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/post_image"
+        android:adjustViewBounds="true"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/post_caption_layout"
+        android:src="@drawable/test_image" />
+    <include
+        layout="@layout/layout_progress"/>
 
 </RelativeLayout>
