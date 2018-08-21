@@ -62,6 +62,7 @@ class HomeCenterFragment : Fragment(), AnkoLogger {
             }
 
             override fun onDataChange(snapShot: DataSnapshot) {
+                posts.clear()
                 for (snapshotObj in snapShot.children) {
                     val userPost = snapshotObj.getValue(UserPost::class.java)
                     posts.add(userPost!!)

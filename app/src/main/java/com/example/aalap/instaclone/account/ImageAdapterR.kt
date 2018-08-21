@@ -10,11 +10,13 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
+import com.example.aalap.instaclone.Models.UserPost
 import com.example.aalap.instaclone.R
 import kotlinx.android.synthetic.main.image_items.view.*
+import org.jetbrains.anko.displayMetrics
 import kotlin.coroutines.experimental.coroutineContext
 
-class ImageAdapterR(private val mContext: Context, var mThumbIds: List<String>, var requestManager: RequestManager) : RecyclerView.Adapter<ImageAdapterR.ImageHolder>() {
+class ImageAdapterR(private val mContext: Context, var mThumbIds: List<UserPost>, var requestManager: RequestManager, var callBack:ImageAdapter.CallBack) : RecyclerView.Adapter<ImageAdapterR.ImageHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageHolder {
         return ImageHolder(LayoutInflater.from(mContext).inflate(R.layout.image_items, parent,false))
     }
@@ -25,13 +27,23 @@ class ImageAdapterR(private val mContext: Context, var mThumbIds: List<String>, 
 
     override fun onBindViewHolder(holder: ImageHolder, position: Int) {
         requestManager
-                .load(mThumbIds.get(position))
+                .load(mThumbIds.get(position).postImage)
                 .into(holder.imageView)
+        holder.itemView.setOnClickListener{holder.bindClick(mThumbIds[position])}
+
+        holder.imageView.layoutParams.width = mContext.displayMetrics.widthPixels / 4
+        holder.imageView.layoutParams.height = mContext.displayMetrics.widthPixels / 4
     }
 
-    class ImageHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ImageHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var imageView = itemView.findViewById<ImageView>(R.id.image_item)
+
+        fun bindClick(userPost: UserPost) {
+            callBack.deliverImage(userPost)
+        }
     }
+
+
 
 
 }

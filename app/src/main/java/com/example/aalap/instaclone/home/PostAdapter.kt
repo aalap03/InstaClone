@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.aalap.instaclone.Models.UserPost
 import com.example.aalap.instaclone.R
+import com.example.aalap.instaclone.Utils
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.displayMetrics
 import org.jetbrains.anko.info
@@ -59,16 +60,10 @@ class PostAdapter(var context: Context, var posts: MutableList<UserPost>) : Recy
 
             userName.text = userPost.user.name
             postCaption.text = userPost.caption
-            postTime.text = formatDate(userPost.postTime)
-
+            postTime.text = Utils.formatDate(userPost.postTime)
         }
 
-        private fun formatDate(postTime: String): String {
-            var simpleDateFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy")
-            val parse = simpleDateFormat.parse(postTime)
 
-            return DateUtils.getRelativeTimeSpanString(parse.getTime(), Date().time, DateUtils.SECOND_IN_MILLIS).toString();
-        }
 
     }
 }

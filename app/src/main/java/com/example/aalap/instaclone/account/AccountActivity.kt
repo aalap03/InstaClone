@@ -3,31 +3,39 @@ package com.example.aalap.instaclone.account
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.Toolbar
+import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import com.bumptech.glide.Glide
-import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
 import com.example.aalap.instaclone.BaseActivity
 import com.example.aalap.instaclone.Constants
 import com.example.aalap.instaclone.Models.UserPost
 import com.example.aalap.instaclone.Preference
 import com.example.aalap.instaclone.R
+import com.example.aalap.instaclone.viewPost.ViewPostActivity
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import kotlinx.android.synthetic.main.include_layout_bottombar.*
 import kotlinx.android.synthetic.main.layout_account.*
 import org.jetbrains.anko.info
+
+val POST_IMAGE = "post_image"
+val POST_CAPTION = "post_caption"
+val POST_TIME = "post_TIME"
 
 class AccountActivity : BaseActivity(), ImageAdapter.CallBack {
 
     lateinit var preference : Preference
-    var userPosts = mutableListOf<String>()
+    var userPosts = mutableListOf<UserPost>()
 
-    override fun deliverImage(imagePath: String) {
-        info { "Clicked imagePath: $imagePath" }
+    override fun deliverImage(post: Any) {
+        val userPost = post as UserPost
+        var intent = Intent(this, ViewPostActivity::class.java)
+        intent.putExtra(POST_IMAGE, userPost.postImage)
+        intent.putExtra(POST_CAPTION, userPost.caption)
+        intent.putExtra(POST_TIME, userPost.postTime)
+        startActivity(intent)
     }
 
     override fun getToolbarTitle(): String {
@@ -46,11 +54,9 @@ class AccountActivity : BaseActivity(), ImageAdapter.CallBack {
         super.onCreate(savedInstanceState)
 
         preference = Preference(applicationContext)
-        //account_recycler_view.layoutManager = GridLayoutManager(this, 4)
+
         var requestManager = Glide.with(this)
                 .applyDefaultRequestOptions(RequestOptions().placeholder(R.mipmap.ic_launcher_round))
-        var imagesAdapter = ImageAdapter(this, userPosts, requestManager, this@AccountActivity)
-        //account_recycler_view.adapter = imagesAdapter
 
         FirebaseDatabase.getInstance().reference.child("user_posts").addValueEventListener(object: ValueEventListener {
             override fun onCancelled(error: DatabaseError) {
@@ -59,19 +65,35 @@ class AccountActivity : BaseActivity(), ImageAdapter.CallBack {
 
             override fun onDataChange(snapShot: DataSnapshot) {
 
+                info{
+                    snapShot.childrenCount
+                }
                 if(snapShot.childrenCount > 0) {
+                    info { "going for snapshot" }
+                    var int = 0
                     for(snapshott in snapShot.children) {
+                        info { "childre: ${int++}" }
                         val value = snapshott.getValue(UserPost::class.java)
                         if(value?.user?.id.equals(preference.getUserId())) {
-                            userPosts.add(value?.postImage!!)
+                            userPosts.add(value!!)
+                            userPosts.add(value!!)
+                            userPosts.add(value!!)
+                            userPosts.add(value!!)
+                            userPosts.add(value!!)
+                            userPosts.add(value!!)
+                            userPosts.add(value!!)
+                            info { "addingItem" }
                         }
                     }
-                    imagesAdapter.notifyDataSetChanged()
+                    info { "trying to notify" }
+                    account_recycler_view.layoutManager = GridLayoutManager(this@AccountActivity, 4)
+
+                    account_recycler_view.adapter = ImageAdapterR(this@AccountActivity, userPosts,
+                            requestManager, this@AccountActivity)
                 }
             }
         })
-        gridView.numColumns = 4
-        gridView.adapter = imagesAdapter
+
 
     }
 

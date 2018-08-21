@@ -44,6 +44,7 @@
         <activity android:name=".account.AccountActivity" />
         <activity android:name=".account.AccountEditActivity" />
         <activity android:name=".addPost.PostActivity" />
+        <activity android:name=".viewPost.ViewPostActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"

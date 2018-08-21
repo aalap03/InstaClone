@@ -1,21 +1,21 @@
 package com.example.aalap.instaclone.account
 
 import android.content.Context
-import android.support.v7.view.menu.ActionMenuItemView
-import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
-import com.bumptech.glide.Glide
+import android.widget.Toast
 import com.bumptech.glide.RequestManager
-import com.example.aalap.instaclone.R
-import kotlinx.android.synthetic.main.image_items.view.*
+import com.example.aalap.instaclone.Models.UserPost
+import org.jetbrains.anko.AnkoLogger
+import org.jetbrains.anko.info
+import kotlin.coroutines.experimental.coroutineContext
 
-class ImageAdapter(private val mContext: Context, var mThumbIds: List<String>, var requestManager: RequestManager, var callBack: CallBack) : BaseAdapter() {
+class ImageAdapter(private val mContext: Context, var list: MutableList<Any>, var requestManager: RequestManager, var callBack: CallBack)
+    : BaseAdapter(), AnkoLogger {
 
-    override fun getCount(): Int = mThumbIds.size
+    override fun getCount(): Int = list.size
 
     override fun getItem(position: Int): Any? = null
 
@@ -33,15 +33,27 @@ class ImageAdapter(private val mContext: Context, var mThumbIds: List<String>, v
             imageView = convertView as ImageView
         }
 
-        requestManager.load(mThumbIds.get(position))
-                .into(imageView)
+        val any = list[position]
+        if (any is UserPost) {
+            info { "adapter: userPost:" }
+            requestManager.load(any.postImage)
+                    .into(imageView)
+        } else {
+            info { "adapter: strings:" }
+            requestManager.load(any)
+                    .into(imageView)
+        }
 
-        convertView?.setOnClickListener{callBack.deliverImage(mThumbIds[position])}
+        if (convertView != null)
+            convertView.setOnClickListener { callBack.deliverImage(list[position]) }
+        else
+            Toast.makeText(mContext, "Null bro..!!", Toast.LENGTH_SHORT)
+                    .show()
 
         return imageView
     }
 
-    interface CallBack{
-        fun deliverImage(imagePath: String)
+    interface CallBack {
+        fun deliverImage(imagePath: Any)
     }
 }

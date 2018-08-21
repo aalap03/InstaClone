@@ -25,11 +25,10 @@ val PERM_CODE = 1
 class GalleryFragment : Fragment(), AnkoLogger, ImageAdapter.CallBack {
 
     var selectedImagePath = ""
-    override fun deliverImage(imagePath: String) {
-        selectedImagePath = imagePath
+    override fun deliverImage(imagePath: Any) {
 
         Glide.with(this)
-                .load(selectedImagePath)
+                .load(imagePath as String)
                 .into(gallery_selected_image)
     }
 
@@ -48,7 +47,6 @@ class GalleryFragment : Fragment(), AnkoLogger, ImageAdapter.CallBack {
         else
             requestImages()
 
-        cam_image.pivotX
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -71,7 +69,7 @@ class GalleryFragment : Fragment(), AnkoLogger, ImageAdapter.CallBack {
                 )
 
         val allImages = getAllShownImagesPath(requireActivity())
-        val imageAdapter = ImageAdapter(requireContext(), allImages, requestManager, this@GalleryFragment)
+        val imageAdapter = ImageAdapter(requireContext(), allImages.toMutableList(), requestManager, this@GalleryFragment)
         gallery_recycler.adapter = imageAdapter
         deliverImage(allImages[0])
     }
