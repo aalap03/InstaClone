@@ -49,7 +49,7 @@ class HomeCenterFragment : Fragment(), AnkoLogger {
         refresh_layout.setOnRefreshListener { requestPostList() }
     }
 
-    fun requestPostList() {
+    private fun requestPostList() {
 
         FirebaseDatabase.getInstance()
                 .reference

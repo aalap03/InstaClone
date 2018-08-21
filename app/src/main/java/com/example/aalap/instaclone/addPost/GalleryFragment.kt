@@ -16,9 +16,10 @@ import android.content.pm.PackageManager
 import android.database.Cursor
 import android.net.Uri
 import android.support.v4.app.ActivityCompat
+import android.support.v7.widget.GridLayoutManager
 import com.bumptech.glide.request.RequestOptions
 import com.example.aalap.instaclone.account.ImageAdapter
-import kotlinx.android.synthetic.main.layout_camera_fragment.*
+import com.example.aalap.instaclone.account.ImageAdapterR
 import kotlinx.android.synthetic.main.layout_gallery_fragment.*
 
 val PERM_CODE = 1
@@ -26,9 +27,9 @@ class GalleryFragment : Fragment(), AnkoLogger, ImageAdapter.CallBack {
 
     var selectedImagePath = ""
     override fun deliverImage(imagePath: Any) {
-
+        selectedImagePath = imagePath as String
         Glide.with(this)
-                .load(imagePath as String)
+                .load(selectedImagePath)
                 .into(gallery_selected_image)
     }
 
@@ -69,8 +70,9 @@ class GalleryFragment : Fragment(), AnkoLogger, ImageAdapter.CallBack {
                 )
 
         val allImages = getAllShownImagesPath(requireActivity())
-        val imageAdapter = ImageAdapter(requireContext(), allImages.toMutableList(), requestManager, this@GalleryFragment)
-        gallery_recycler.adapter = imageAdapter
+        val imageAdapter = ImageAdapterR(requireContext(), allImages, requestManager, this@GalleryFragment)
+        gallery_image_recycler.layoutManager = GridLayoutManager(requireContext(), 4)
+        gallery_image_recycler.adapter = imageAdapter
         deliverImage(allImages[0])
     }
 

@@ -24,8 +24,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/post_image"
         android:adjustViewBounds="true"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/post_caption_layout"
+        android:layout_centerInParent="true"
         android:src="@drawable/test_image" />
     <include
         layout="@layout/layout_progress"/>

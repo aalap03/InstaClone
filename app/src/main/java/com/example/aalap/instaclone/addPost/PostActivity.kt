@@ -56,13 +56,6 @@ class PostActivity : AppCompatActivity(), AnkoLogger {
         post_caption_layout.findViewById<TextInputLayout>(R.id.input_edit_text_layout).hint = "Add Caption"
         caption = post_caption_layout.findViewById(R.id.input_edit_text)
 
-        val layoutParams = post_image.layoutParams
-
-        var displayMetrics = DisplayMetrics()
-        windowManager.defaultDisplay.getMetrics(displayMetrics)
-        post_image.layoutParams.width = (displayMetrics.widthPixels * 0.7).toInt()
-        post_image.layoutParams.height = (displayMetrics.heightPixels * 0.7).toInt()
-
         if (intent != null) {
             selectedImage = intent.getStringExtra(SELECTED_IMAGE)
             Glide.with(this)

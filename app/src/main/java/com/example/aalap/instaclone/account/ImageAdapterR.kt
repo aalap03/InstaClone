@@ -16,9 +16,9 @@ import kotlinx.android.synthetic.main.image_items.view.*
 import org.jetbrains.anko.displayMetrics
 import kotlin.coroutines.experimental.coroutineContext
 
-class ImageAdapterR(private val mContext: Context, var mThumbIds: List<UserPost>, var requestManager: RequestManager, var callBack:ImageAdapter.CallBack) : RecyclerView.Adapter<ImageAdapterR.ImageHolder>() {
+class ImageAdapterR(private val mContext: Context, var mThumbIds: List<Any>, var requestManager: RequestManager, var callBack: ImageAdapter.CallBack) : RecyclerView.Adapter<ImageAdapterR.ImageHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageHolder {
-        return ImageHolder(LayoutInflater.from(mContext).inflate(R.layout.image_items, parent,false))
+        return ImageHolder(LayoutInflater.from(mContext).inflate(R.layout.image_items, parent, false))
     }
 
     override fun getItemCount(): Int {
@@ -26,24 +26,31 @@ class ImageAdapterR(private val mContext: Context, var mThumbIds: List<UserPost>
     }
 
     override fun onBindViewHolder(holder: ImageHolder, position: Int) {
-        requestManager
-                .load(mThumbIds.get(position).postImage)
-                .into(holder.imageView)
-        holder.itemView.setOnClickListener{holder.bindClick(mThumbIds[position])}
+
+        val any = mThumbIds[position]
+
+        if (any is UserPost)
+            requestManager
+                    .load(any.postImage)
+                    .into(holder.imageView)
+        else
+            requestManager
+                    .load(any)
+                    .into(holder.imageView)
+
+        holder.itemView.setOnClickListener { holder.bindClick(any) }
 
         holder.imageView.layoutParams.width = mContext.displayMetrics.widthPixels / 4
         holder.imageView.layoutParams.height = mContext.displayMetrics.widthPixels / 4
     }
 
     inner class ImageHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var imageView = itemView.findViewById<ImageView>(R.id.image_item)
+        var imageView: ImageView = itemView.findViewById(R.id.image_item)
 
-        fun bindClick(userPost: UserPost) {
+        fun bindClick(userPost: Any) {
             callBack.deliverImage(userPost)
         }
     }
-
-
 
 
 }
