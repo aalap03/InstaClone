@@ -1,4 +1,4 @@
-package com.example.aalap.instaclone.Models
+package com.example.aalap.instaclone.models
 
 data class UserAccountDetails(var descr: String,
                               var username: String,

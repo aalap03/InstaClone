@@ -3,13 +3,12 @@ package com.example.aalap.instaclone.account
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.aalap.instaclone.BaseActivity
 import com.example.aalap.instaclone.Constants
-import com.example.aalap.instaclone.Models.UserPost
+import com.example.aalap.instaclone.models.UserPost
 import com.example.aalap.instaclone.Preference
 import com.example.aalap.instaclone.R
 import com.example.aalap.instaclone.viewPost.ViewPostActivity
@@ -24,7 +23,7 @@ val POST_IMAGE = "post_image"
 val POST_CAPTION = "post_caption"
 val POST_TIME = "post_TIME"
 
-class AccountActivity : BaseActivity(), ImageAdapter.CallBack {
+class AccountActivity : BaseActivity(), ImageCallback {
 
     lateinit var preference : Preference
     var userPosts = mutableListOf<UserPost>()
@@ -88,7 +87,7 @@ class AccountActivity : BaseActivity(), ImageAdapter.CallBack {
                     info { "trying to notify" }
                     account_recycler_view.layoutManager = GridLayoutManager(this@AccountActivity, 4)
 
-                    account_recycler_view.adapter = ImageAdapterR(this@AccountActivity, userPosts,
+                    account_recycler_view.adapter = ImageAdapter(this@AccountActivity, userPosts,
                             requestManager, this@AccountActivity)
                 }
             }

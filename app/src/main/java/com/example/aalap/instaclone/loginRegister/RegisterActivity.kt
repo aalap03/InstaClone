@@ -18,8 +18,8 @@ import android.text.format.DateUtils
 import android.view.View
 import android.widget.*
 import com.example.aalap.instaclone.R
-import com.example.aalap.instaclone.Models.User
-import com.example.aalap.instaclone.Models.UserAccountDetails
+import com.example.aalap.instaclone.models.User
+import com.example.aalap.instaclone.models.UserAccountDetails
 import com.example.aalap.instaclone.account.CODE_MEDIA_PERMISSION
 import com.example.aalap.instaclone.account.CODE_PICK_IMAGE
 import com.google.firebase.auth.FirebaseAuth

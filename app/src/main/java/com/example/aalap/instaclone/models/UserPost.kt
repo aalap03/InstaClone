@@ -1,4 +1,4 @@
-package com.example.aalap.instaclone.Models
+package com.example.aalap.instaclone.models
 
 data class UserPost(var postId: String,
                     var caption:String,

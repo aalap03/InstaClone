@@ -1,32 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:gravity="center_horizontal"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal">
 
     <RelativeLayout
-        android:layout_width="match_parent"
         android:id="@+id/toolbar_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <include
-            layout="@layout/include_layout_toolbar"/>
+
+        <include layout="@layout/include_layout_toolbar" />
     </RelativeLayout>
 
     <include
         android:id="@+id/post_caption_layout"
-        android:layout_height="wrap_content"
+        layout="@layout/include_template_edittext_input_layout"
         android:layout_width="match_parent"
-        android:layout_below="@id/toolbar_layout"
-        layout="@layout/include_template_edittext_input_layout"/>
+        android:layout_height="wrap_content"
+        android:layout_below="@id/toolbar_layout" />
 
     <ImageView
+        android:id="@+id/post_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/post_image"
-        android:adjustViewBounds="true"
         android:layout_centerInParent="true"
+        android:adjustViewBounds="true"
         android:src="@drawable/test_image" />
-    <include
-        layout="@layout/layout_progress"/>
+
+    <VideoView
+        android:id="@+id/post_story"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/post_caption_layout"
+        android:src="@drawable/test_image" />
+
+    <include layout="@layout/layout_progress" />
 
 </RelativeLayout>

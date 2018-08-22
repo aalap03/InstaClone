@@ -17,6 +17,7 @@ import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
 import android.support.v4.content.FileProvider
 import com.bumptech.glide.Glide
+import com.example.aalap.instaclone.Utils
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -72,27 +73,14 @@ class CameraFragment : Fragment(), AnkoLogger {
     private fun openCam() {
         info { "openingCam" }
         var intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        var photoFile = createImageFile()
+        var photoFile = Utils.createImageFile(requireContext(), ".jpg")
+        mCurrentPhotoPath = photoFile.absolutePath
 
         val uriForFile = FileProvider.getUriForFile(requireContext(), "com.example.aalap.instaclone.fileprovider", photoFile)
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uriForFile);
         startActivityForResult(intent, OPEN_CAM)
     }
 
-    private fun createImageFile(): File {
-        // Create an image file name
-        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-        val imageFileName = "JPEG_" + timeStamp + "_"
-        val storageDir = requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        val image = File.createTempFile(
-                imageFileName, /* prefix */
-                ".jpg", /* suffix */
-                storageDir      /* directory */
-        )
 
-        // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = image.absolutePath
-        return image
-    }
 
 }

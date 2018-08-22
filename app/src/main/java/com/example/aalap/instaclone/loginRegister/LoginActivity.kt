@@ -9,7 +9,7 @@ import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.widget.*
-import com.example.aalap.instaclone.Models.UserAccountDetails
+import com.example.aalap.instaclone.models.UserAccountDetails
 import com.example.aalap.instaclone.R
 import com.example.aalap.instaclone.Preference
 import com.example.aalap.instaclone.home.HomeActivity

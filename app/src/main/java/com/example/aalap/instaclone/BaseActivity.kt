@@ -137,6 +137,4 @@ abstract class BaseActivity : AppCompatActivity(), AnkoLogger {
         }
         return R.drawable.bottom_home_filled
     }
-
-
 }

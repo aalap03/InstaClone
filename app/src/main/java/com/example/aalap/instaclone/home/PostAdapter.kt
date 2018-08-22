@@ -2,7 +2,6 @@ package com.example.aalap.instaclone.home
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
-import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,14 +9,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.example.aalap.instaclone.Models.UserPost
+import com.example.aalap.instaclone.models.UserPost
 import com.example.aalap.instaclone.R
 import com.example.aalap.instaclone.Utils
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.displayMetrics
 import org.jetbrains.anko.info
-import java.text.SimpleDateFormat
-import java.util.*
 
 class PostAdapter(var context: Context, var posts: MutableList<UserPost>) : RecyclerView.Adapter<PostAdapter.PostHolder>(), AnkoLogger {
 
