@@ -26,6 +26,7 @@ import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
 import java.io.File
 import java.util.*
+import com.google.firebase.storage.StorageMetadata
 
 
 abstract class BasePostActivity : AppCompatActivity(), AnkoLogger {
@@ -44,10 +45,10 @@ abstract class BasePostActivity : AppCompatActivity(), AnkoLogger {
 
     abstract fun getUserStory(resultVideoUri: String): UserStory?
 
-    lateinit var firebaseDb: FirebaseDatabase
     lateinit var fbReference: DatabaseReference
     lateinit var storageReference: StorageReference
     lateinit var caption: EditText
+    lateinit var pref: Preference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,12 +56,12 @@ abstract class BasePostActivity : AppCompatActivity(), AnkoLogger {
         toolbar.title = getToolbarTitle()
         setSupportActionBar(toolbar)
         post_progress.visibility = View.GONE
+        pref = Preference(applicationContext)
 
         post_caption_layout.findViewById<TextInputLayout>(R.id.input_edit_text_layout).hint = "Add Caption"
         caption = post_caption_layout.findViewById(R.id.input_edit_text)
 
-        firebaseDb = FirebaseDatabase.getInstance()
-        fbReference = firebaseDb.reference
+        fbReference = FirebaseDatabase.getInstance().reference
         storageReference = FirebaseStorage.getInstance().getReference(getStorageReference())
 
     }
@@ -93,10 +94,9 @@ abstract class BasePostActivity : AppCompatActivity(), AnkoLogger {
 
                     post_progress.visibility = View.VISIBLE
 
-                    val imageUri = Uri.fromFile(File(getPostUri()))
                     var imageStoreReference = storageReference.child(getStorageReferenceChild())
 
-                    imageStoreReference.putFile(imageUri).continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { snapShot ->
+                    imageStoreReference.putFile(Uri.parse(getPostUri())).continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { snapShot ->
                         if (snapShot.isSuccessful) {
                             info { "returning ${imageStoreReference.downloadUrl}" }
                             return@Continuation imageStoreReference.downloadUrl
@@ -105,12 +105,13 @@ abstract class BasePostActivity : AppCompatActivity(), AnkoLogger {
                         throw snapShot.exception!!
                     }).addOnCompleteListener { task ->
                         val postId = fbReference.push().key
+                        var userPost: Any?
+                        var resultUri = task.result.toString()
 
-                        var userPost:Any? = getUserPost(task.result.toString()) as UserPost
-
-                        if( userPost == null) {
-                            userPost = getUserStory(task.result.toString()) as UserStory
-                        }
+                        if(getToolbarTitle().contains("Story"))
+                            userPost = getUserStory(resultUri) as UserStory
+                        else
+                            userPost = getUserPost(resultUri) as UserPost
 
                         info { "setting value.. $userPost" }
                         fbReference.child(getFBReferenceChild()).child(postId!!).setValue(userPost)
@@ -130,11 +131,18 @@ abstract class BasePostActivity : AppCompatActivity(), AnkoLogger {
         return super.onOptionsItemSelected(item)
     }
 
-    fun getCurretUser() :User{
+    fun getCurretUser(): User {
         val preference = Preference(applicationContext)
 
         return User(preference.getUserName(), preference.getUserEmail()
                 , preference.getUserId(), preference.getProfilePic())
+
+    }
+
+    fun metadata() {
+        val metadata = StorageMetadata.Builder()
+                .setContentType("audio/mpeg")
+                .build()
 
     }
 

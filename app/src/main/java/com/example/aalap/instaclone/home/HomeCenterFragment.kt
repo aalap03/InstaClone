@@ -20,6 +20,7 @@ import com.example.aalap.instaclone.models.UserPost
 import com.example.aalap.instaclone.Preference
 import com.example.aalap.instaclone.R
 import com.example.aalap.instaclone.Utils
+import com.example.aalap.instaclone.models.UserStory
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -27,8 +28,6 @@ import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.layout_center_home_fragment.*
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
-import com.google.firebase.storage.StorageMetadata
-
 
 
 val PERM_CAMERA = 1
@@ -38,7 +37,9 @@ class HomeCenterFragment : Fragment(), AnkoLogger {
 
     lateinit var pref: Preference
     lateinit var postAdapter: PostAdapter
+    lateinit var storyAdapter: StoryAdapter
     var posts = mutableListOf<UserPost>()
+    var stories = mutableListOf<UserStory>()
     var uriForFile: Uri? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -53,8 +54,12 @@ class HomeCenterFragment : Fragment(), AnkoLogger {
         info { pref.getUserId() }
 
         postAdapter = PostAdapter(requireContext(), posts)
+        storyAdapter = StoryAdapter(requireContext(), stories)
         home_feeds_recycler.layoutManager = LinearLayoutManager(requireContext())
         home_feeds_recycler.adapter = postAdapter
+
+        story_recycler.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        story_recycler.adapter = storyAdapter
 
         Glide.with(this)
                 .load(pref.getProfilePic())
@@ -62,9 +67,41 @@ class HomeCenterFragment : Fragment(), AnkoLogger {
 
         requestPostList()
 
+        requestStories()
+
         home_profile_pic.setOnClickListener { handlePermissions() }
 
         refresh_layout.setOnRefreshListener { requestPostList() }
+    }
+
+    private fun requestStories() {
+        story_progress.visibility = View.VISIBLE
+
+        FirebaseDatabase.getInstance()
+                .reference
+                .child("user_stories")
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onCancelled(error: DatabaseError) {
+                        info { "fuss.. ${error.message}" }
+                        Toast.makeText(requireContext(), "Could not fetch stories", Toast.LENGTH_SHORT).show()
+                        story_progress.visibility = View.GONE
+                    }
+
+                    override fun onDataChange(snapShot: DataSnapshot) {
+                        stories.clear()
+                        info { "got stories" }
+                        for (snapshotObj in snapShot.children) {
+                            val userStory = snapshotObj.getValue(UserStory::class.java)
+                            stories.add(userStory!!)
+                        }
+                        story_progress.visibility = View.GONE
+                        story_recycler.visibility = View.VISIBLE
+
+                        stories.reverse()
+                        storyAdapter.notifyDataSetChanged()
+
+                    }
+                })
     }
 
     private fun handlePermissions() {

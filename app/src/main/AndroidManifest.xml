@@ -55,6 +55,7 @@
         </provider>
 
         <activity android:name=".home.AddStoryActivity"></activity>
+        <activity android:name=".home.StoryScreen" />
     </application>
 
 </manifest>

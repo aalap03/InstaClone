@@ -6,7 +6,9 @@
 
     <LinearLayout
         android:layout_width="match_parent"
+        android:orientation="horizontal"
         android:layout_height="wrap_content">
+
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/home_profile_pic"
             android:layout_width="70dp"
@@ -14,11 +16,19 @@
             android:layout_gravity="start"
             android:layout_margin="10dp"
             android:src="@mipmap/ic_launcher_round" />
-        <android.support.v7.widget.RecyclerView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
-    </LinearLayout>
 
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:id="@+id/story_recycler"
+            android:layout_height="match_parent"/>
+
+        <ProgressBar
+            android:layout_width="match_parent"
+            android:layout_gravity="center"
+            android:id="@+id/story_progress"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
 
 
     <TextView

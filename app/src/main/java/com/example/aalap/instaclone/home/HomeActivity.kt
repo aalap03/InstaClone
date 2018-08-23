@@ -28,6 +28,6 @@ class HomeActivity: BaseActivity() {
 
         home_viewpager.adapter = pagerAdapter
 
-        home_tablayout.setupWithViewPager(home_viewpager)
+        //home_tablayout.setupWithViewPager(home_viewpager)
     }
 }
